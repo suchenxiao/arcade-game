@@ -59,13 +59,13 @@ Player.prototype.handleInput = function(key) {
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
-var enemy1 = new Enemy(xUnit*-0.5, yUnit*1-15);
-var enemy2 = new Enemy(xUnit*-0.5, yUnit*2-15);
-var enemy3 = new Enemy(xUnit*-0.5, yUnit*3-15);
-var enemy4 = new Enemy(xUnit*-0.5, yUnit*4-15);
+var enemy1 = new Enemy(xUnit*-0.5, yUnit*1-20);
+var enemy2 = new Enemy(xUnit*-0.5, yUnit*2-20);
+var enemy3 = new Enemy(xUnit*-0.5, yUnit*3-20);
+var enemy4 = new Enemy(xUnit*-0.5, yUnit*4-20);
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
-var player = new Player(xUnit*2, yUnit*5-15);
+var player = new Player(xUnit*2, yUnit*5-10);
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
 // 方法里面。你不需要再更改这段代码了。
