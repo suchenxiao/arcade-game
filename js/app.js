@@ -60,9 +60,13 @@ Player.prototype.handleInput = function(key) {
     switch(key)
     {
     case 'up':
-      {((this.y - enemyOffset) / yUnit >= 1 ) ? (this.y -= yUnit) :_; break;}
+      {
+		  ((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : _;
+		  ((this.y - playerOffset) / yUnit == 0 ) ? this.win() : _;
+          break;
+      }
     case 'down':
-      {((this.y - enemyOffset) / yUnit <= 5 ) ? (this.y += yUnit) :_; break;}
+      {((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : _; break;}
     case 'left':
       {(this.x / xUnit >= 1 ) ? (this.x -= xUnit) : _; break;}
     case 'right':
@@ -72,10 +76,14 @@ Player.prototype.handleInput = function(key) {
     }
 };
 //重置玩家位置
-Player.prototype.reset = function(){
+Player.prototype.reset = function() {
 	alert("NO!!!");
     this.x = this.col * xUnit;
 	this.y = this.row * yUnit;
+}
+//游戏成功
+Player.prototype.win = function() {
+	alert("YES");
 }
 
 // 现在实例化你的所有对象
