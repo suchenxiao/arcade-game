@@ -55,21 +55,23 @@ Player.prototype.update = function(dt) {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+//控制玩家移动
 Player.prototype.handleInput = function(key) {
     switch(key)
     {
     case 'up':
-      {this.y -= yUnit; break;}
+      {((this.y - enemyOffset) / yUnit >= 1 ) ? (this.y -= yUnit) :_; break;}
     case 'down':
-      {this.y += yUnit; break;}
+      {((this.y - enemyOffset) / yUnit <= 5 ) ? (this.y += yUnit) :_; break;}
     case 'left':
-      {this.x -= xUnit; break;}
+      {(this.x / xUnit >= 1 ) ? (this.x -= xUnit) : _; break;}
     case 'right':
-      {this.x += xUnit; break;}
+      {(this.x / xUnit <= 3 ) ? (this.x += xUnit) : _; break;}
     default:
       {}
     }
 };
+//重置玩家位置
 Player.prototype.reset = function(){
 	alert("NO!!!");
     this.x = this.col * xUnit;
