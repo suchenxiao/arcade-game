@@ -14,6 +14,7 @@ var Enemy = function(x, y) {
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
+    this.x += dt*100;
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
