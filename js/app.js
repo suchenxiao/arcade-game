@@ -22,6 +22,10 @@ Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
     this.x += dt*100;
+	if(this.impact(player)) {
+        alert("!");
+    }
+
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
@@ -29,9 +33,9 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// 判定敌人是否与玩家碰撞(temp)
+// 判定敌人是否与玩家碰撞
 Enemy.prototype.impact = function(player) {
-    return ((this.y - enemyOffset == player.x - playerOffset) && (Math.abs(this.x - player.x) < 101));
+    return ((this.y - enemyOffset == player.y - playerOffset) && (Math.abs(this.x - player.x) < xUnit/2));
 }
 
 // 现在实现你自己的玩家类
