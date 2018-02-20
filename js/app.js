@@ -4,16 +4,13 @@ const xUnit = 101, yUnit = 83;
 const playerOffset = -10 , enemyOffset = -20;
 
 // 这是我们的玩家要躲避的敌人 
-var Enemy = function(col, row) {
+var Enemy = function() {
     // 要应用到每个敌人的实例的变量写在这里
     // 我们已经提供了一个来帮助你实现更多
 
     // 敌人的图片，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/enemy-bug.png';
-	this.col = col;
-	this.row = row;
-	this.x = col * xUnit;
-	this.y = row * yUnit + enemyOffset;
+	this.reset();
 };
 
 // 此为游戏必须的函数，用来更新敌人的位置
@@ -21,7 +18,7 @@ var Enemy = function(col, row) {
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
-    this.x += dt*100;
+    (this.x / xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
 	if(this.impact(player)) {
         player.reset();
     }
@@ -36,6 +33,14 @@ Enemy.prototype.render = function() {
 // 判定敌人是否与玩家碰撞
 Enemy.prototype.impact = function(player) {
     return ((this.y - enemyOffset == player.y - playerOffset) && (Math.abs(this.x - player.x) < xUnit/2));
+}
+// 设置敌人随机值
+Enemy.prototype.reset = function(){
+    this.col = -2*Math.random();
+    this.row = Math.floor((4*Math.random())+1);
+    this.speed = 500*Math.random()+200;
+	this.x = this.col * xUnit;
+	this.y = this.row * yUnit + enemyOffset;
 }
 
 // 现在实现你自己的玩家类
@@ -77,9 +82,9 @@ Player.prototype.handleInput = function(key) {
 };
 //重置玩家位置
 Player.prototype.reset = function() {
-	alert("NO!!!");
+    alert("NO!!!");
     this.x = this.col * xUnit;
-	this.y = this.row * yUnit;
+	this.y = this.row * yUnit + playerOffset;
 }
 //游戏成功
 Player.prototype.win = function() {
@@ -89,10 +94,10 @@ Player.prototype.win = function() {
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
-var enemy1 = new Enemy(-0.5, 1);
-var enemy2 = new Enemy(-0.5, 2);
-var enemy3 = new Enemy(-0.5, 3);
-var enemy4 = new Enemy(-0.5, 4);
+var enemy1 = new Enemy();
+var enemy2 = new Enemy();
+var enemy3 = new Enemy();
+var enemy4 = new Enemy();
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
 var player = new Player(2, 5);
