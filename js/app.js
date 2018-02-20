@@ -20,7 +20,8 @@ Enemy.prototype.update = function(dt) {
     // 都是以同样的速度运行的
     (this.x / xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
 	if(this.impact(player)) {
-        player.reset();
+        alert("NO!!!");
+		player.reset();
     }
 
 };
@@ -36,9 +37,9 @@ Enemy.prototype.impact = function(player) {
 }
 // 设置敌人随机值
 Enemy.prototype.reset = function(){
-    this.col = -2*Math.random();
-    this.row = Math.floor((4*Math.random())+1);
-    this.speed = 500*Math.random()+200;
+    this.col = -2 * Math.random();
+    this.row = Math.floor(4 * Math.random() + 1);
+    this.speed = 500 * Math.random() + 200;
 	this.x = this.col * xUnit;
 	this.y = this.row * yUnit + enemyOffset;
 }
@@ -54,8 +55,8 @@ var Player = function(col, row) {
 	this.x = col * xUnit;
 	this.y = row * yUnit + playerOffset;
 }
-Player.prototype.update = function(dt) {
-
+Player.prototype.update = function() {
+    if((this.y - playerOffset) / yUnit == 0 ) { this.win() }
 };
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -65,11 +66,7 @@ Player.prototype.handleInput = function(key) {
     switch(key)
     {
     case 'up':
-      {
-		  ((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : _;
-		  ((this.y - playerOffset) / yUnit == 0 ) ? this.win() : _;
-          break;
-      }
+      {((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : _; break;}
     case 'down':
       {((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : _; break;}
     case 'left':
@@ -82,13 +79,13 @@ Player.prototype.handleInput = function(key) {
 };
 //重置玩家位置
 Player.prototype.reset = function() {
-    alert("NO!!!");
     this.x = this.col * xUnit;
 	this.y = this.row * yUnit + playerOffset;
 }
 //游戏成功
 Player.prototype.win = function() {
 	alert("YES");
+	this.reset();
 }
 
 // 现在实例化你的所有对象
