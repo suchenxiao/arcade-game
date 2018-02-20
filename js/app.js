@@ -23,7 +23,7 @@ Enemy.prototype.update = function(dt) {
     // 都是以同样的速度运行的
     this.x += dt*100;
 	if(this.impact(player)) {
-        alert("!");
+        player.reset();
     }
 
 };
@@ -70,6 +70,11 @@ Player.prototype.handleInput = function(key) {
       {}
     }
 };
+Player.prototype.reset = function(){
+	alert("NO!!!");
+    this.x = this.col * xUnit;
+	this.y = this.row * yUnit;
+}
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
