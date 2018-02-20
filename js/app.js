@@ -37,8 +37,20 @@ Player.prototype.update = function(dt) {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-Player.prototype.handleInput = function() {
-
+Player.prototype.handleInput = function(key) {
+    switch(key)
+    {
+    case 'up':
+      {this.y -= 83; break;}
+    case 'down':
+      {this.y += 83; break;}
+    case 'left':
+      {this.x -= 101; break;}
+    case 'right':
+      {this.x += 101; break;}
+    default:
+      {}
+    }
 };
 
 // 现在实例化你的所有对象
