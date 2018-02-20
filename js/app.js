@@ -1,3 +1,6 @@
+// 横纵单位长度
+const xUnit = 101, yUnit = 83;
+
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function(x, y) {
     // 要应用到每个敌人的实例的变量写在这里
@@ -41,13 +44,13 @@ Player.prototype.handleInput = function(key) {
     switch(key)
     {
     case 'up':
-      {this.y -= 83; break;}
+      {this.y -= yUnit; break;}
     case 'down':
-      {this.y += 83; break;}
+      {this.y += yUnit; break;}
     case 'left':
-      {this.x -= 101; break;}
+      {this.x -= xUnit; break;}
     case 'right':
-      {this.x += 101; break;}
+      {this.x += xUnit; break;}
     default:
       {}
     }
@@ -56,13 +59,13 @@ Player.prototype.handleInput = function(key) {
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
-var enemy1 = new Enemy(101*-0.5, 83*1-15);
-var enemy2 = new Enemy(101*-0.5, 83*2-15);
-var enemy3 = new Enemy(101*-0.5, 83*3-15);
-var enemy4 = new Enemy(101*-0.5, 83*4-15);
+var enemy1 = new Enemy(xUnit*-0.5, yUnit*1-15);
+var enemy2 = new Enemy(xUnit*-0.5, yUnit*2-15);
+var enemy3 = new Enemy(xUnit*-0.5, yUnit*3-15);
+var enemy4 = new Enemy(xUnit*-0.5, yUnit*4-15);
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
-var player = new Player(101*2, 83*5-15);
+var player = new Player(xUnit*2, yUnit*5-15);
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
 // 方法里面。你不需要再更改这段代码了。
