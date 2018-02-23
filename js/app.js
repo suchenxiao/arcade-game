@@ -45,10 +45,11 @@ Enemy.prototype.reset = function(){
 
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
-var Player = function(col, row) {
+var Player = function(col, row, char) {
 
     // 玩家的图片
-    this.sprite = 'images/char-boy.png';
+    this.chars = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl']
+    this.sprite = 'images/char-' + this.chars[char] + '.png';
 	this.col = col;
 	this.row = row;
 	this.reset();
@@ -106,7 +107,12 @@ var enemy3 = new Enemy();
 var enemy4 = new Enemy();
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
-var player = new Player(2, 5);
+var player1 = new Player(2, 5, 0);
+var player2 = new Player(2, 5, 1);
+var player3 = new Player(2, 5, 2);
+var player4 = new Player(2, 5, 3);
+var player5 = new Player(2, 5, 4);
+var player = player3;
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
 // 方法里面。你不需要再更改这段代码了。
