@@ -19,9 +19,8 @@ Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
     (this.x / xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
-	if(this.impact(player)) {
-        alert("NO!!!");
-		player.reset();
+    if(this.impact(player) && !player.over) {
+        setTimeout(function(){player.gameOver()}, 10);
     }
 
 };
@@ -52,11 +51,12 @@ var Player = function(col, row) {
     this.sprite = 'images/char-boy.png';
 	this.col = col;
 	this.row = row;
-	this.x = col * xUnit;
-	this.y = row * yUnit + playerOffset;
+	this.reset();
 }
 Player.prototype.update = function() {
-    if((this.y - playerOffset) / yUnit == 0 ) { this.win() }
+    if((this.y - playerOffset) / yUnit == 0 && !this.won) {
+        setTimeout(function(){player.gameWon()}, 10)
+    }
 };
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -66,13 +66,13 @@ Player.prototype.handleInput = function(key) {
     switch(key)
     {
     case 'up':
-      {((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : _; break;}
+      {((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : false; break;}
     case 'down':
-      {((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : _; break;}
+      {((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : false; break;}
     case 'left':
-      {(this.x / xUnit >= 1 ) ? (this.x -= xUnit) : _; break;}
+      {(this.x / xUnit >= 1 ) ? (this.x -= xUnit) : false; break;}
     case 'right':
-      {(this.x / xUnit <= 3 ) ? (this.x += xUnit) : _; break;}
+      {(this.x / xUnit <= 3 ) ? (this.x += xUnit) : false; break;}
     default:
       {}
     }
@@ -81,11 +81,20 @@ Player.prototype.handleInput = function(key) {
 Player.prototype.reset = function() {
     this.x = this.col * xUnit;
 	this.y = this.row * yUnit + playerOffset;
+	this.won = false;
+	this.over = false;
 }
 //游戏成功
-Player.prototype.win = function() {
-	alert("YES");
-	this.reset();
+Player.prototype.gameWon = function() {
+    this.won = true;
+    alert("YES");
+    this.reset();
+}
+//游戏失败
+Player.prototype.gameOver = function() {
+    this.over = true;
+    alert("NO!");
+    this.reset();
 }
 
 // 现在实例化你的所有对象
