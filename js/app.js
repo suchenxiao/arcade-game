@@ -1,9 +1,19 @@
-// 横纵单位长度
-const xUnit = 101, yUnit = 83;
-// 玩家及敌人位置（y轴）修正值
-const playerOffset = -10 , enemyOffset = -20;
-// 选择角色环节
-const selector = true;
+// 游戏参数
+var game = {
+
+    // 横纵单位长度
+    'xUnit' : 101,
+    'yUnit' : 83,
+
+    // 玩家及敌人位置（y轴）修正值
+    'playerOffset' : -10,
+    'enemyOffset' : -20,
+
+    // 玩家角色选择判定
+    'selector' : true,
+    'charNum' : 0
+}
+
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -20,7 +30,7 @@ var Enemy = function() {
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
-    (this.x / xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
+    (this.x / game.xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
     if(this.impact(player) && !player.over) {
         setTimeout(function(){player.gameOver()}, 10);
     }
@@ -34,15 +44,15 @@ Enemy.prototype.render = function() {
 
 // 判定敌人是否与玩家碰撞
 Enemy.prototype.impact = function(player) {
-    return ((this.y - enemyOffset == player.y - playerOffset) && (Math.abs(this.x - player.x) < xUnit/2));
+    return ((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit/2));
 }
 // 设置敌人随机值
 Enemy.prototype.reset = function(){
     this.col = -2 * Math.random();
     this.row = Math.floor(4 * Math.random() + 1);
     this.speed = 500 * Math.random() + 200;
-	this.x = this.col * xUnit;
-	this.y = this.row * yUnit + enemyOffset;
+	this.x = this.col * game.xUnit;
+	this.y = this.row * game.yUnit + game.enemyOffset;
 }
 
 // 现在实现你自己的玩家类
@@ -62,7 +72,7 @@ var Player = function(col, row, char) {
 	this.reset();
 }
 Player.prototype.update = function() {
-    if((this.y - playerOffset) / yUnit == 0 && !this.won) {
+    if((this.y - game.playerOffset) / game.yUnit == 0 && !this.won) {
         setTimeout(function(){player.gameWon()}, 10)
     }
 };
@@ -74,39 +84,45 @@ Player.prototype.handleInputSelect = function(key) {
     switch(key)
     {
     case 'left':
-      if(player5.x > 2 * xUnit) {
-        allPlayers.forEach(function(player){player.x -= xUnit;});
+      if(player5.x > 2 * game.xUnit) {
+        allPlayers.forEach(function(player){player.x -= game.xUnit;});
+        game.charNum += 1;
       }
       break;
     case 'right':
-      if(player1.x < 2 * xUnit){
-        allPlayers.forEach(function(player){player.x += xUnit;});
+      if(player1.x < 2 * game.xUnit){
+        allPlayers.forEach(function(player){player.x += game.xUnit;});
+        game.charNum -= 1;
       }
+      break;
+    case 'enter':
+    case 'space':
+      player = allPlayers[charNum];
       break;
     default:
       {}
     }
 };
 // 控制玩家移动（游戏环节）
-Player.prototype.handleInputGame = function(key) {
+Player.prototype.handleInputgame = function(key) {
     switch(key)
     {
     case 'up':
-      ((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : false; break;
+      ((this.y - game.playerOffset) / game.yUnit >= 1 ) ? (this.y -= game.yUnit) : false; break;
     case 'down':
-      ((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : false; break;
+      ((this.y - game.playerOffset) / game.yUnit <= 4 ) ? (this.y += game.yUnit) : false; break;
     case 'left':
-      (this.x / xUnit >= 1 ) ? (this.x -= xUnit) : false; break;
+      (this.x / game.xUnit >= 1 ) ? (this.x -= game.xUnit) : false; break;
     case 'right':
-      (this.x / xUnit <= 3 ) ? (this.x += xUnit) : false; break;
+      (this.x / game.xUnit <= 3 ) ? (this.x += game.xUnit) : false; break;
     default:
       {}
     }
 };
 //重置玩家位置
 Player.prototype.reset = function() {
-    this.x = this.col * xUnit;
-	this.y = this.row * yUnit + playerOffset;
+    this.x = this.col * game.xUnit;
+	this.y = this.row * game.yUnit + game.playerOffset;
 	this.won = false;
 	this.over = false;
 }
@@ -152,5 +168,5 @@ document.addEventListener('keyup', function(e) {
         13: 'enter',
         32: 'space'
     };
-    selector ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputGame(allowedKeys[e.keyCode]);
+    game.selector ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
 });
