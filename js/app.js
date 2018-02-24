@@ -2,6 +2,8 @@
 const xUnit = 101, yUnit = 83;
 // 玩家及敌人位置（y轴）修正值
 const playerOffset = -10 , enemyOffset = -20;
+// 选择角色环节
+const selector = true;
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -62,18 +64,36 @@ Player.prototype.update = function() {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-//控制玩家移动
-Player.prototype.handleInput = function(key) {
+// 控制玩家移动（选人环节）
+Player.prototype.handleInputSelect = function(key) {
+    switch(key)
+    {
+    case 'left':
+      if(player5.x > 2 * xUnit) {
+        allPlayers.forEach(function(player){player.x -= xUnit;});
+      }
+      break;
+    case 'right':
+      if(player1.x < 2 * xUnit){
+        allPlayers.forEach(function(player){player.x += xUnit;});
+      }
+      break;
+    default:
+      {}
+    }
+};
+// 控制玩家移动（游戏环节）
+Player.prototype.handleInputGame = function(key) {
     switch(key)
     {
     case 'up':
-      {((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : false; break;}
+      ((this.y - playerOffset) / yUnit >= 1 ) ? (this.y -= yUnit) : false; break;
     case 'down':
-      {((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : false; break;}
+      ((this.y - playerOffset) / yUnit <= 4 ) ? (this.y += yUnit) : false; break;
     case 'left':
-      {(this.x / xUnit >= 1 ) ? (this.x -= xUnit) : false; break;}
+      (this.x / xUnit >= 1 ) ? (this.x -= xUnit) : false; break;
     case 'right':
-      {(this.x / xUnit <= 3 ) ? (this.x += xUnit) : false; break;}
+      (this.x / xUnit <= 3 ) ? (this.x += xUnit) : false; break;
     default:
       {}
     }
@@ -108,11 +128,12 @@ var enemy4 = new Enemy();
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
 var player1 = new Player(2, 5, 0);
-var player2 = new Player(2, 5, 1);
-var player3 = new Player(2, 5, 2);
-var player4 = new Player(2, 5, 3);
-var player5 = new Player(2, 5, 4);
-var player = player3;
+var player2 = new Player(3, 5, 1);
+var player3 = new Player(4, 5, 2);
+var player4 = new Player(5, 5, 3);
+var player5 = new Player(6, 5, 4);
+var allPlayers = [player1, player2, player3, player4, player5];
+var player = player1;
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
 // 方法里面。你不需要再更改这段代码了。
@@ -121,8 +142,9 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        13: 'enter',
+        32: 'space'
     };
-
-    player.handleInput(allowedKeys[e.keyCode]);
+    selector ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputGame(allowedKeys[e.keyCode]);
 });
