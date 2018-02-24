@@ -28,6 +28,11 @@ var game = {
     won : false,
     over : false,
 };
+// 角色选定
+game.charSele = function(){
+    this.sele =false;
+    player = new Player(2, 5, game.charNum);
+}
 // 游戏成功
 game.gameWon = function() {
     this.won = true;
@@ -115,7 +120,7 @@ Player.prototype.handleInputSelect = function(key) {
       break;
     case 'enter':
     case 'space':
-      player = allPlayers[charNum];
+      game.charSele();
       break;
     default:
       {}

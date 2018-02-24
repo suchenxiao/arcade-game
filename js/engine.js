@@ -76,7 +76,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        if(!game.sele) {
+            player.update();
+        }
     }
 
     /* 这个函数做了一些游戏的初始渲染，然后调用 renderEntities 函数。记住，这个函数
@@ -121,13 +123,14 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        selectBox.render();
-
-        allPlayers.forEach(function(player) {
+	if(game.sele) {
+            selectBox.render();
+            allPlayers.forEach(function(player) {
+                player.render();
+            });
+        } else {
             player.render();
-        });
-
-        player.render();
+        }
     }
 
     /* 这个函数现在没干任何事，但是这会是一个好地方让你来处理游戏重置的逻辑。可能是一个
