@@ -22,7 +22,7 @@ var game = {
 
     // 玩家角色选择判定
     sele : true,
-    charNum : 0,
+    charNum : 1,
 
     // 游戏成功&失败
     won : false,
@@ -62,9 +62,6 @@ Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
     (this.x / game.xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
-    if(this.impact(player) && !player.over) {
-        setTimeout(function(){game.gameOver()}, 10);
-    }
 
 };
 
@@ -74,8 +71,10 @@ Enemy.prototype.render = function() {
 };
 
 // 判定敌人是否与玩家碰撞
-Enemy.prototype.impact = function(player) {
-    return ((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit/2));
+Enemy.prototype.impact = function() {
+    if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!player.over) ) {
+        setTimeout(function(){game.gameOver()}, 10);
+    }
 }
 // 设置敌人随机值
 Enemy.prototype.reset = function(){
