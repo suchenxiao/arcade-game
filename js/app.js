@@ -1,19 +1,45 @@
 // 游戏参数
 var game = {
 
+    // 图片素材地址
+    imgUrl : [
+        'images/enemy-bug.png',
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Selector.png'
+    ],
+
     // 横纵单位长度
-    'xUnit' : 101,
-    'yUnit' : 83,
+    xUnit : 101,
+    yUnit : 83,
 
     // 玩家及敌人位置（y轴）修正值
-    'playerOffset' : -10,
-    'enemyOffset' : -20,
+    playerOffset : -10,
+    enemyOffset : -20,
 
     // 玩家角色选择判定
-    'selector' : true,
-    'charNum' : 0
-}
+    sele : true,
+    charNum : 0,
 
+    // 游戏成功&失败
+    won : false,
+    over : false,
+};
+// 游戏成功
+game.gameWon = function() {
+    this.won = true;
+    alert("YES");
+    player.reset();
+};
+// 游戏失败
+game.gameOver = function() {
+    this.over = true;
+    alert("NO!");
+    player.reset();
+}
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -21,7 +47,7 @@ var Enemy = function() {
     // 我们已经提供了一个来帮助你实现更多
 
     // 敌人的图片，用一个我们提供的工具函数来轻松的加载文件
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = game.imgUrl[0];
 	this.reset();
 };
 
@@ -32,7 +58,7 @@ Enemy.prototype.update = function(dt) {
     // 都是以同样的速度运行的
     (this.x / game.xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
     if(this.impact(player) && !player.over) {
-        setTimeout(function(){player.gameOver()}, 10);
+        setTimeout(function(){game.gameOver()}, 10);
     }
 
 };
@@ -58,22 +84,14 @@ Enemy.prototype.reset = function(){
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
 var Player = function(col, row, char) {
-
-    // 玩家的图片
-    this.chars = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl'];
-
-	if(char >= 0) {
-        this.sprite = 'images/char-' + this.chars[char] + '.png';
-    }else {
-        this.sprite = 'images/Selector.png';
-    }
+    this.sprite = game.imgUrl[char];
 	this.col = col;
 	this.row = row;
 	this.reset();
 }
 Player.prototype.update = function() {
     if((this.y - game.playerOffset) / game.yUnit == 0 && !this.won) {
-        setTimeout(function(){player.gameWon()}, 10)
+        setTimeout(function(){game.gameWon()}, 10)
     }
 };
 Player.prototype.render = function() {
@@ -126,18 +144,6 @@ Player.prototype.reset = function() {
 	this.won = false;
 	this.over = false;
 }
-//游戏成功
-Player.prototype.gameWon = function() {
-    this.won = true;
-    alert("YES");
-    this.reset();
-}
-//游戏失败
-Player.prototype.gameOver = function() {
-    this.over = true;
-    alert("NO!");
-    this.reset();
-}
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
@@ -148,12 +154,12 @@ var enemy3 = new Enemy();
 var enemy4 = new Enemy();
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
-var player1 = new Player(2, 5, 0);
-var player2 = new Player(3, 5, 1);
-var player3 = new Player(4, 5, 2);
-var player4 = new Player(5, 5, 3);
-var player5 = new Player(6, 5, 4);
-var selectBox = new Player(2, 5, -1);
+var player1 = new Player(2, 5, 1);
+var player2 = new Player(3, 5, 2);
+var player3 = new Player(4, 5, 3);
+var player4 = new Player(5, 5, 4);
+var player5 = new Player(6, 5, 5);
+var selectBox = new Player(2, 5, 6);
 var allPlayers = [player1, player2, player3, player4, player5];
 var player = player1;
 
@@ -168,5 +174,5 @@ document.addEventListener('keyup', function(e) {
         13: 'enter',
         32: 'space'
     };
-    game.selector ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
+    game.sele ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
 });
