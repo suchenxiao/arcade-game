@@ -50,8 +50,13 @@ Enemy.prototype.reset = function(){
 var Player = function(col, row, char) {
 
     // 玩家的图片
-    this.chars = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl']
-    this.sprite = 'images/char-' + this.chars[char] + '.png';
+    this.chars = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl'];
+
+	if(char >= 0) {
+        this.sprite = 'images/char-' + this.chars[char] + '.png';
+    }else {
+        this.sprite = 'images/Selector.png';
+    }
 	this.col = col;
 	this.row = row;
 	this.reset();
@@ -132,6 +137,7 @@ var player2 = new Player(3, 5, 1);
 var player3 = new Player(4, 5, 2);
 var player4 = new Player(5, 5, 3);
 var player5 = new Player(6, 5, 4);
+var selectBox = new Player(2, 5, -1);
 var allPlayers = [player1, player2, player3, player4, player5];
 var player = player1;
 

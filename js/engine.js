@@ -120,6 +120,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
+
+        selectBox.render();
+
         allPlayers.forEach(function(player) {
             player.render();
         });
