@@ -57,7 +57,9 @@ game.start = function() {
     this.beforePage.style.display = 'none';
     this.afterPage.style.display = 'none';
     this.duringPage.style.display = 'block';
-    this.score.innerHTML = game.score.value = 0;
+    this.score.innerHTML = this.score.value = 0;
+	this.timer.innerHTML = this.timer.value = 30;
+
 }
 // 角色选定
 game.charSele = function(){
@@ -76,12 +78,8 @@ game.gameWin = function() {
 game.gameFail = function() {
     this.procSet('fail');
     this.score.innerHTML = game.score.value -= 1;
-    if(game.score.value>=0) {
-	    player.reset();
-        this.procSet('during');
-    } else {
-        this.gameOver();
-    }
+    player.reset();
+    this.procSet('during');
 }
 // 游戏结束
 game.gameOver = function() {
@@ -105,16 +103,34 @@ game.handleInput = function(key){
 		   {}
 	}
 }
+//游戏计时
+game.timedCount = function(dt) {
+    this.timer.value -= dt;
+    if(this.timer.value>0) {
+        this.timer.innerHTML = Math.floor(this.timer.value);
+	} else {
+        this.gameOver();
+    }
+}
+function stopCount() {
+    timed = 0;
+    $timer.text(timed);
+    clearTimeout(t);
+    isTiming = false;
+}
 
 // 游戏DOM对象
 game.beforePage = document.getElementsByClassName('before-game')[0];
 game.duringPage = document.getElementsByClassName('during-game')[0];
 game.afterPage = document.getElementsByClassName('after-game')[0];
+
 game.startBtn = document.getElementsByClassName('start')[0];
 game.restartBtn = document.getElementsByClassName('restart')[0];
+
 game.score = document.getElementsByClassName('score')[0].getElementsByTagName('span')[0];
-game.score.value = 0;
 game.finalScore = game.afterPage.getElementsByTagName('h1')[0];
+
+game.timer = game.duringPage.getElementsByClassName('timer')[0];
 
 game.startBtn.addEventListener('click', function(){
     game.start();

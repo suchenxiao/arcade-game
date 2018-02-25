@@ -67,6 +67,7 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         if(game.process.during) {
+            game.timedCount(dt);
             checkCollisions();
         }
     }
