@@ -33,14 +33,29 @@ var game = {
         after : false
     }
 };
+// 游戏环节变更
+game.procSet = function(proc){
+    for( var p in game.process) { game.process[p] = false; }
+    if(game.process[proc] !== undefined) game.process[proc] = true;
+}
+
+// 游戏开始
+game.start = function() {
+    this.procSet('before');
+}
+// 游戏重新开始
+game.reStart = function() {
+    this.procSet('selecting');
+}
 // 角色选定
 game.charSele = function(){
-    this.process.selecting =false;
+    this.procSet('during');
     player = new Player(2, 5, game.charNum);
 }
+
 // 游戏成功
 game.gameWin = function() {
-    this.process.win = true;
+    this.procSet('win');
     alert("YES");
     player.reset();
 };
@@ -153,9 +168,8 @@ Player.prototype.handleInputgame = function(key) {
 //重置玩家位置
 Player.prototype.reset = function() {
     this.x = this.col * game.xUnit;
-	this.y = this.row * game.yUnit + game.playerOffset;
-	game.process.win = false;
-	game.process.over = false;
+    this.y = this.row * game.yUnit + game.playerOffset;
+    game.procSet('during');
 }
 
 // 现在实例化你的所有对象
