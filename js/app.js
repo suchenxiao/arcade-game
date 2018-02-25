@@ -33,19 +33,28 @@ var game = {
         after : false
     }
 };
+
 // 游戏环节变更
 game.procSet = function(proc){
     for( var p in game.process) { game.process[p] = false; }
     if(game.process[proc] !== undefined) game.process[proc] = true;
 }
+// 游戏环节进程
+game.procShow = function(){
+	for( var p in game.process) {
+	    if(game.process[p]) return p;
+    }
+}
 
+// 游戏初始化
+game.init = function() {
+    this.procSet('before');
+	game.beforePage.style.display = 'flex';
+}
 // 游戏开始
 game.start = function() {
-    this.procSet('before');
-}
-// 游戏重新开始
-game.reStart = function() {
     this.procSet('selecting');
+	game.beforePage.style.display = 'none';
 }
 // 角色选定
 game.charSele = function(){
@@ -65,10 +74,31 @@ game.gameOver = function() {
     //alert("NO!");
     player.reset();
 }
-// 游戏前、中、后提示内容
-game.beforePage = document.getElementsByClassName('after-game').item(0);
-game.duringPage = document.getElementsByClassName('during-game').item(0);
-game.afterPage = document.getElementsByClassName('after-game').item(0);
+// 游戏操作
+game.handleInput = function(key){
+    switch(game.procShow()){
+        case 'before':
+		  break;
+		case 'selecting':
+		  player.handleInputSelect(key);
+		  break;
+		case 'during':
+		  player.handleInputgame(key);
+		  break;
+		 default:
+		   {}
+	}
+}
+
+// 游戏DOM对象
+game.beforePage = document.getElementsByClassName('before-game')[0];
+game.duringPage = document.getElementsByClassName('during-game')[0];
+game.afterPage = document.getElementsByClassName('after-game')[0];
+game.startBtn = document.getElementsByClassName('start')[0];
+
+game.startBtn.addEventListener('click', function(){
+    game.start();
+});
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -201,5 +231,7 @@ document.addEventListener('keyup', function(e) {
         13: 'enter',
         32: 'space'
     };
-    game.process.selecting ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
+
+    game.handleInput(allowedKeys[e.keyCode]);
+
 });

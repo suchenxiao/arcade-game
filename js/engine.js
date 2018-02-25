@@ -53,7 +53,8 @@ var Engine = (function(global) {
      * 做一次就够了
      */
     function init() {
-        reset();
+        game.init();
+		//reset();
         lastTime = Date.now();
         main();
     }
@@ -65,7 +66,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        if(!game.process.selecting) {
+        if(game.process.during) {
             checkCollisions();
         }
     }
@@ -129,7 +130,7 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-	if(game.process.selecting) {
+	if(game.process.before || game.process.selecting) {
             selectBox.render();
             allPlayers.forEach(function(player) {
                 player.render();
@@ -145,7 +146,7 @@ var Engine = (function(global) {
      */
     function reset() {
         // 游戏重新开始
-        game.reStart();
+
     }
 
     /* 紧接着我们来加载我们知道的需要来绘制我们游戏关卡的图片。然后把 init 方法设置为回调函数。
