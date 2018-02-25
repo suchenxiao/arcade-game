@@ -12,7 +12,7 @@ var game = {
         'images/Selector.png'
     ],
 
-    // 玩家角色序号
+    // 角色序号
     charNum : 1,
 
     // 横纵单位长度
@@ -49,12 +49,13 @@ game.procShow = function(){
 // 游戏初始化
 game.init = function() {
     this.procSet('before');
-	game.beforePage.style.display = 'flex';
+    game.beforePage.style.display = 'flex';
 }
 // 游戏开始
 game.start = function() {
     this.procSet('selecting');
-	game.beforePage.style.display = 'none';
+    game.beforePage.style.display = 'none';
+    game.duringPage.style.display = 'block';
 }
 // 角色选定
 game.charSele = function(){
@@ -65,13 +66,13 @@ game.charSele = function(){
 // 游戏成功
 game.gameWin = function() {
     this.procSet('win');
-    alert("YES");
+    game.score.innerHTML = (game.score.value += 1);
     player.reset();
 };
 // 游戏失败
 game.gameOver = function() {
     this.over = true;
-    //alert("NO!");
+    game.score.innerHTML = (game.score.value -= 1);
     player.reset();
 }
 // 游戏操作
@@ -95,6 +96,8 @@ game.beforePage = document.getElementsByClassName('before-game')[0];
 game.duringPage = document.getElementsByClassName('during-game')[0];
 game.afterPage = document.getElementsByClassName('after-game')[0];
 game.startBtn = document.getElementsByClassName('start')[0];
+game.score = document.getElementsByClassName('score')[0].getElementsByTagName('span')[0];
+game.score.value = 0;
 
 game.startBtn.addEventListener('click', function(){
     game.start();

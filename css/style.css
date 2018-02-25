@@ -22,6 +22,7 @@ canvas {
 }
 .during-game{
     display:none;
+	background:none;
 }
 .after-game{
     display:none;
