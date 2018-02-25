@@ -38,34 +38,33 @@ var game = {
 game.procSet = function(proc){
     for( var p in this.process) { this.process[p] = false; }
     if(this.process[proc] !== undefined) this.process[proc] = true;
-}
+};
 // 游戏环节进程
 game.procShow = function(){
 	for( var p in this.process) {
 	    if(this.process[p]) return p;
     }
-}
+};
 
 // 游戏初始化
 game.init = function() {
     this.procSet('before');
-    this.beforePage.style.display = 'flex';
-}
+};
 // 游戏开始
 game.start = function() {
     this.procSet('selecting');
-    this.beforePage.style.display = 'none';
-    this.afterPage.style.display = 'none';
-    this.duringPage.style.display = 'block';
+    this.pageHidden(this.beforePage);
+    this.pageHidden(this.afterPage);
+    this.pageShow(this.duringPage);
     this.score.innerHTML = this.score.value = 0;
-	this.timer.innerHTML = this.timer.value = 30;
-
-}
+    this.timer.innerHTML = this.timer.value = 30;
+    this.timer.style.width = '0%';
+};
 // 角色选定
 game.charSele = function(){
     this.procSet('during');
     player = new Player(2, 5, game.charNum);
-}
+};
 
 // 游戏成功
 game.gameWin = function() {
@@ -80,14 +79,14 @@ game.gameFail = function() {
     this.score.innerHTML = game.score.value -= 1;
     player.reset();
     this.procSet('during');
-}
+};
 // 游戏结束
 game.gameOver = function() {
     this.procSet('after');
     this.finalScore.innerHTML = this.score.value;
-    this.duringPage.style.display = 'none';
-    this.afterPage.style.display = 'flex';
-}
+    this.pageHidden(this.duringPage);
+    this.pageShow(this.afterPage);
+};
 // 游戏操作
 game.handleInput = function(key){
     switch(game.procShow()){
@@ -102,21 +101,31 @@ game.handleInput = function(key){
 		 default:
 		   {}
 	}
-}
-//游戏计时
+};
+
+// 游戏计时
 game.timedCount = function(dt) {
     this.timer.value -= dt;
     if(this.timer.value>0) {
         this.timer.innerHTML = Math.floor(this.timer.value);
+        this.timer.style.width = (1 - this.timer.value / 30) * 100 + '%';
 	} else {
         this.gameOver();
     }
 }
-function stopCount() {
-    timed = 0;
-    $timer.text(timed);
-    clearTimeout(t);
-    isTiming = false;
+
+// 页面变换
+game.pageShow = function(obj){
+    obj.style.display = 'flex';
+    setTimeout(function(){
+        obj.style.opacity = 1;
+    }, 500);
+}
+game.pageHidden = function(obj){
+    obj.style.opacity = 0;
+    setTimeout(function(){
+        obj.style.display = 'none';
+    }, 500);
 }
 
 // 游戏DOM对象
@@ -124,13 +133,13 @@ game.beforePage = document.getElementsByClassName('before-game')[0];
 game.duringPage = document.getElementsByClassName('during-game')[0];
 game.afterPage = document.getElementsByClassName('after-game')[0];
 
-game.startBtn = document.getElementsByClassName('start')[0];
-game.restartBtn = document.getElementsByClassName('restart')[0];
+game.startBtn = game.beforePage.getElementsByClassName('start')[0];
+game.restartBtn = game.afterPage.getElementsByClassName('start')[0];
 
-game.score = document.getElementsByClassName('score')[0].getElementsByTagName('span')[0];
-game.finalScore = game.afterPage.getElementsByTagName('h1')[0];
+game.score = game.duringPage.getElementsByClassName('score')[0].getElementsByTagName('span')[0];
+game.finalScore = game.afterPage.getElementsByClassName('score')[0];
 
-game.timer = game.duringPage.getElementsByClassName('timer')[0];
+game.timer = game.duringPage.getElementsByClassName('timer')[0].getElementsByTagName('span')[0];
 
 game.startBtn.addEventListener('click', function(){
     game.start();
