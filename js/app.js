@@ -1,4 +1,5 @@
-// 游戏参数
+// 游戏全局对象
+// 存储全局参数及游戏进度
 var game = {
 
     // 图片素材地址
@@ -89,9 +90,11 @@ game.gameOver = function() {
     this.pageHidden(this.duringPage);
     this.pageShow(this.afterPage);
 };
-// 游戏操作
+
+// 通过键盘按键，控制玩家移动
+// 在游戏的不同时期，移动方法不同
 game.handleInput = function(key){
-    switch(game.procShow()){
+    switch(this.procShow()){
         case 'before':
 		  break;
 		case 'selecting':
@@ -106,6 +109,7 @@ game.handleInput = function(key){
 };
 
 // 游戏计时
+// 控制倒计时进度
 game.timedCount = function(dt) {
     this.timer.value -= dt;
     if(this.timer.value>0) {
@@ -116,7 +120,8 @@ game.timedCount = function(dt) {
     }
 }
 
-// 页面变换
+// 游戏辅助内容
+// 用于控制游戏开始页、倒计时条及结束页 渐变出现或隐藏
 game.pageShow = function(obj){
     obj.style.display = 'flex';
     setTimeout(function(){
@@ -130,7 +135,7 @@ game.pageHidden = function(obj){
     }, 500);
 }
 
-// 游戏DOM对象
+// 游戏DOM对象及监视器
 game.beforePage = document.getElementsByClassName('before-game')[0];
 game.duringPage = document.getElementsByClassName('during-game')[0];
 game.afterPage = document.getElementsByClassName('after-game')[0];
@@ -150,26 +155,20 @@ game.restartBtn.addEventListener('click', function(){
     game.start();
 });
 
-// 这是我们的玩家要躲避的敌人 
-var Enemy = function() {
-    // 要应用到每个敌人的实例的变量写在这里
-    // 我们已经提供了一个来帮助你实现更多
 
-    // 敌人的图片，用一个我们提供的工具函数来轻松的加载文件
+// 玩家要躲避的敌人
+var Enemy = function() {
     this.sprite = game.imgUrl[0];
 	this.reset();
 };
 
-// 此为游戏必须的函数，用来更新敌人的位置
+// 更新敌人的位置，按时间自动移动
 // 参数: dt ，表示时间间隙
 Enemy.prototype.update = function(dt) {
-    // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
-    // 都是以同样的速度运行的
     (this.x / game.xUnit < 6) ? (this.x += dt * this.speed) : this.reset();
-
 };
 
-// 此为游戏必须的函数，用来在屏幕上画出敌人，
+// 在屏幕上画出敌人
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
@@ -180,7 +179,7 @@ Enemy.prototype.impact = function() {
         setTimeout(function(){game.gameFail()}, 10);
     }
 };
-// 设置敌人随机值
+// 重置敌人的位置及速度
 Enemy.prototype.reset = function(){
     this.col = -2 * Math.random();
     this.row = Math.floor(4 * Math.random() + 1);
@@ -189,23 +188,30 @@ Enemy.prototype.reset = function(){
 	this.y = this.row * game.yUnit + game.enemyOffset;
 };
 
-// 现在实现你自己的玩家类
-// 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
+// 玩家控制的角色
+// 参数分别对应角色的初始位置及素材图编号
 var Player = function(col, row, char) {
     this.sprite = game.imgUrl[char];
 	this.col = col;
 	this.row = row;
 	this.reset();
 }
+// 判定玩家是否到达终点
 Player.prototype.update = function() {
     if((this.y - game.playerOffset) / game.yUnit == 0 && !game.process.win) {
         setTimeout(function(){game.gameWin()}, 10)
     }
 };
+// 在屏幕上画出玩家角色
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-// 控制玩家移动（选人环节）
+// 重置玩家位置
+Player.prototype.reset = function() {
+    this.x = this.col * game.xUnit;
+    this.y = this.row * game.yUnit + game.playerOffset;
+};
+// 控制角色移动（选人环节）
 Player.prototype.handleInputSelect = function(key) {
     switch(key)
     {
@@ -229,7 +235,7 @@ Player.prototype.handleInputSelect = function(key) {
       {}
     }
 };
-// 控制玩家移动（游戏环节）
+// 控制角色移动（游戏环节）
 Player.prototype.handleInputGame = function(key) {
     switch(key)
     {
@@ -245,30 +251,22 @@ Player.prototype.handleInputGame = function(key) {
       {}
     }
 };
-// 重置玩家位置
-Player.prototype.reset = function() {
-    this.x = this.col * game.xUnit;
-    this.y = this.row * game.yUnit + game.playerOffset;
-};
 
-// 选取框构造函数
-var SelectBox = function(col, row){
+
+// 选择角色时的背景框
+var SelectBox = function(col, row) {
     Player.call(this, 2, 5, 6);
 };
 SelectBox.prototype = Object.create(Player.prototype);
 SelectBox.prototype.constructor = SelectBox;
 
-// 星星构造函数
+
+// 到达终点后闪现的星星
 var Star = function(col, row){
     Player.call(this, 10, 10, 7);
 };
 Star.prototype = Object.create(Player.prototype);
 Star.prototype.constructor = SelectBox;
-Star.prototype.show = function(x, y, sec) {
-    this.x = x;
-    this.y = y;
-	setTimeout(function(){star.reset()}, sec*1000);
-};
 Star.prototype.reset = function() {
     this.x = 1000;
     this.y = 1000;
@@ -276,14 +274,21 @@ Star.prototype.reset = function() {
 Star.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+// 星星出现的位置及时长
+// 参数分别对应星星出现的位置(px)及时间(秒)
+Star.prototype.show = function(x, y, sec) {
+    this.x = x;
+    this.y = y;
+	setTimeout(function(){star.reset()}, sec*1000);
+};
 
-// 现在实例化你的所有对象
-// 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
-// 把玩家对象放进一个叫 player 的变量里面
+
+// 实例化所有的对象
 var enemy1 = new Enemy();
 var enemy2 = new Enemy();
 var enemy3 = new Enemy();
 var enemy4 = new Enemy();
+// 所有敌人的对象都放入 allEnemies 数组
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
 
 var player1 = new Player(2, 5, 1);
@@ -291,14 +296,16 @@ var player2 = new Player(3, 5, 2);
 var player3 = new Player(4, 5, 3);
 var player4 = new Player(5, 5, 4);
 var player5 = new Player(6, 5, 5);
+var allPlayers = [player1, player2, player3, player4, player5];
+// 玩家选定的角色放入 plater 变量，预设角色1
+var player = player1;
+
 var selectBox = new SelectBox();
 var star = new Star();
 
-var allPlayers = [player1, player2, player3, player4, player5];
-var player = player1;
 
-// 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Player.handleInput()
-// 方法里面。你不需要再更改这段代码了。
+// 这段代码监听游戏玩家的键盘点击事件
+// 并且代表将按键的关键词送到 game.handleInput()
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         65: 'left',
