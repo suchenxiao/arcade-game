@@ -138,6 +138,7 @@ var Engine = (function(global) {
             });
         } else {
             player.render();
+            star.render();
         }
     }
 
@@ -163,7 +164,8 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/Star.png'
     ]);
     Resources.onReady(init);
 

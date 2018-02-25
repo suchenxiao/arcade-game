@@ -9,7 +9,8 @@ var game = {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/Star.png'
     ],
 
     // 角色序号
@@ -70,6 +71,7 @@ game.charSele = function(){
 game.gameWin = function() {
     this.procSet('win');
     this.score.innerHTML = game.score.value += 1;
+    star.show(player.x, player.y, 1);
     player.reset();
     this.procSet('during');
 };
@@ -96,7 +98,7 @@ game.handleInput = function(key){
 		  player.handleInputSelect(key);
 		  break;
 		case 'during':
-		  player.handleInputgame(key);
+		  player.handleInputGame(key);
 		  break;
 		 default:
 		   {}
@@ -177,7 +179,7 @@ Enemy.prototype.impact = function() {
     if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!game.process.fail) ) {
         setTimeout(function(){game.gameFail()}, 10);
     }
-}
+};
 // 设置敌人随机值
 Enemy.prototype.reset = function(){
     this.col = -2 * Math.random();
@@ -185,7 +187,7 @@ Enemy.prototype.reset = function(){
     this.speed = 500 * Math.random() + 200;
 	this.x = this.col * game.xUnit;
 	this.y = this.row * game.yUnit + game.enemyOffset;
-}
+};
 
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
@@ -228,7 +230,7 @@ Player.prototype.handleInputSelect = function(key) {
     }
 };
 // 控制玩家移动（游戏环节）
-Player.prototype.handleInputgame = function(key) {
+Player.prototype.handleInputGame = function(key) {
     switch(key)
     {
     case 'up':
@@ -243,11 +245,37 @@ Player.prototype.handleInputgame = function(key) {
       {}
     }
 };
-//重置玩家位置
+// 重置玩家位置
 Player.prototype.reset = function() {
     this.x = this.col * game.xUnit;
     this.y = this.row * game.yUnit + game.playerOffset;
+};
+
+// 选取框构造函数
+var SelectBox = function(col, row){
+    Player.call(this, 2, 5, 6);
+};
+SelectBox.prototype = Object.create(Player.prototype);
+SelectBox.prototype.constructor = SelectBox;
+
+// 星星构造函数
+var Star = function(col, row){
+    Player.call(this, 10, 10, 7);
+};
+Star.prototype = Object.create(Player.prototype);
+Star.prototype.constructor = SelectBox;
+Star.prototype.show = function(x, y, sec) {
+    this.x = x;
+    this.y = y;
+	setTimeout(function(){star.reset()}, sec*1000);
+};
+Star.prototype.reset = function() {
+    this.x = 1000;
+    this.y = 1000;
 }
+Star.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
@@ -263,7 +291,9 @@ var player2 = new Player(3, 5, 2);
 var player3 = new Player(4, 5, 3);
 var player4 = new Player(5, 5, 4);
 var player5 = new Player(6, 5, 5);
-var selectBox = new Player(2, 5, 6);
+var selectBox = new SelectBox();
+var star = new Star();
+
 var allPlayers = [player1, player2, player3, player4, player5];
 var player = player1;
 
