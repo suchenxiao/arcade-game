@@ -180,10 +180,10 @@ var player = player1;
 // 方法里面。你不需要再更改这段代码了。
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down',
+        65: 'left',
+        87: 'up',
+        68: 'right',
+        83: 'down',
         13: 'enter',
         32: 'space'
     };
