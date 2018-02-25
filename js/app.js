@@ -42,7 +42,7 @@ game.gameWon = function() {
 // 游戏失败
 game.gameOver = function() {
     this.over = true;
-    alert("NO!");
+    //alert("NO!");
     player.reset();
 }
 

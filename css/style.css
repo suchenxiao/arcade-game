@@ -1,3 +1,28 @@
 body {
     text-align: center;
 }
+canvas {
+    z-index:1;
+}
+.before-game, .during-game, .after-game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width:100%;
+    height:100%;
+    position:fixed;
+    top:0;
+    background:rgba(255,255,255,0.8);
+    z-index:5;
+    text-align:left;
+}
+.before-game{
+
+}
+.during-game{
+    display:none;
+}
+.after-game{
+    display:none;
+}
