@@ -12,6 +12,9 @@ var game = {
         'images/Selector.png'
     ],
 
+    // 玩家角色序号
+    charNum : 1,
+
     // 横纵单位长度
     xUnit : 101,
     yUnit : 83,
@@ -20,22 +23,24 @@ var game = {
     playerOffset : -10,
     enemyOffset : -20,
 
-    // 玩家角色选择判定
-    sele : true,
-    charNum : 1,
-
-    // 游戏成功&失败
-    won : false,
-    over : false,
+    // 游戏环节：开始前 游戏中 选择角色 成功 失败 结束
+    process : {
+        before : false,
+        during : false,
+        selecting : true,
+        win : false,
+        over : false,
+        after : false
+    }
 };
 // 角色选定
 game.charSele = function(){
-    this.sele =false;
+    this.process.selecting =false;
     player = new Player(2, 5, game.charNum);
 }
 // 游戏成功
-game.gameWon = function() {
-    this.won = true;
+game.gameWin = function() {
+    this.process.win = true;
     alert("YES");
     player.reset();
 };
@@ -45,6 +50,10 @@ game.gameOver = function() {
     //alert("NO!");
     player.reset();
 }
+// 游戏前、中、后提示内容
+game.beforePage = document.getElementsByClassName('after-game').item(0);
+game.duringPage = document.getElementsByClassName('during-game').item(0);
+game.afterPage = document.getElementsByClassName('after-game').item(0);
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -72,7 +81,7 @@ Enemy.prototype.render = function() {
 
 // 判定敌人是否与玩家碰撞
 Enemy.prototype.impact = function() {
-    if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!player.over) ) {
+    if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!game.process.over) ) {
         setTimeout(function(){game.gameOver()}, 10);
     }
 }
@@ -94,8 +103,8 @@ var Player = function(col, row, char) {
 	this.reset();
 }
 Player.prototype.update = function() {
-    if((this.y - game.playerOffset) / game.yUnit == 0 && !this.won) {
-        setTimeout(function(){game.gameWon()}, 10)
+    if((this.y - game.playerOffset) / game.yUnit == 0 && !game.process.win) {
+        setTimeout(function(){game.gameWin()}, 10)
     }
 };
 Player.prototype.render = function() {
@@ -145,8 +154,8 @@ Player.prototype.handleInputgame = function(key) {
 Player.prototype.reset = function() {
     this.x = this.col * game.xUnit;
 	this.y = this.row * game.yUnit + game.playerOffset;
-	this.won = false;
-	this.over = false;
+	game.process.win = false;
+	game.process.over = false;
 }
 
 // 现在实例化你的所有对象
@@ -178,5 +187,5 @@ document.addEventListener('keyup', function(e) {
         13: 'enter',
         32: 'space'
     };
-    game.sele ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
+    game.process.selecting ? player.handleInputSelect(allowedKeys[e.keyCode]) : player.handleInputgame(allowedKeys[e.keyCode]);
 });

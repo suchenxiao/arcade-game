@@ -65,7 +65,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        if(!game.sele) {
+        if(!game.process.selecting) {
             checkCollisions();
         }
     }
@@ -129,7 +129,7 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-	if(game.sele) {
+	if(game.process.selecting) {
             selectBox.render();
             allPlayers.forEach(function(player) {
                 player.render();
