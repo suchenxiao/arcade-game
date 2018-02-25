@@ -29,33 +29,35 @@ var game = {
         during : false,
         selecting : true,
         win : false,
-        over : false,
+        fail : false,
         after : false
     }
 };
 
 // 游戏环节变更
 game.procSet = function(proc){
-    for( var p in game.process) { game.process[p] = false; }
-    if(game.process[proc] !== undefined) game.process[proc] = true;
+    for( var p in this.process) { this.process[p] = false; }
+    if(this.process[proc] !== undefined) this.process[proc] = true;
 }
 // 游戏环节进程
 game.procShow = function(){
-	for( var p in game.process) {
-	    if(game.process[p]) return p;
+	for( var p in this.process) {
+	    if(this.process[p]) return p;
     }
 }
 
 // 游戏初始化
 game.init = function() {
     this.procSet('before');
-    game.beforePage.style.display = 'flex';
+    this.beforePage.style.display = 'flex';
 }
 // 游戏开始
 game.start = function() {
     this.procSet('selecting');
-    game.beforePage.style.display = 'none';
-    game.duringPage.style.display = 'block';
+    this.beforePage.style.display = 'none';
+    this.afterPage.style.display = 'none';
+    this.duringPage.style.display = 'block';
+    this.score.innerHTML = game.score.value = 0;
 }
 // 角色选定
 game.charSele = function(){
@@ -66,14 +68,27 @@ game.charSele = function(){
 // 游戏成功
 game.gameWin = function() {
     this.procSet('win');
-    game.score.innerHTML = (game.score.value += 1);
+    this.score.innerHTML = game.score.value += 1;
     player.reset();
+    this.procSet('during');
 };
 // 游戏失败
+game.gameFail = function() {
+    this.procSet('fail');
+    this.score.innerHTML = game.score.value -= 1;
+    if(game.score.value>=0) {
+	    player.reset();
+        this.procSet('during');
+    } else {
+        this.gameOver();
+    }
+}
+// 游戏结束
 game.gameOver = function() {
-    this.over = true;
-    game.score.innerHTML = (game.score.value -= 1);
-    player.reset();
+    this.procSet('after');
+    this.finalScore.innerHTML = this.score.value;
+    this.duringPage.style.display = 'none';
+    this.afterPage.style.display = 'flex';
 }
 // 游戏操作
 game.handleInput = function(key){
@@ -96,10 +111,15 @@ game.beforePage = document.getElementsByClassName('before-game')[0];
 game.duringPage = document.getElementsByClassName('during-game')[0];
 game.afterPage = document.getElementsByClassName('after-game')[0];
 game.startBtn = document.getElementsByClassName('start')[0];
+game.restartBtn = document.getElementsByClassName('restart')[0];
 game.score = document.getElementsByClassName('score')[0].getElementsByTagName('span')[0];
 game.score.value = 0;
+game.finalScore = game.afterPage.getElementsByTagName('h1')[0];
 
 game.startBtn.addEventListener('click', function(){
+    game.start();
+});
+game.restartBtn.addEventListener('click', function(){
     game.start();
 });
 
@@ -129,8 +149,8 @@ Enemy.prototype.render = function() {
 
 // 判定敌人是否与玩家碰撞
 Enemy.prototype.impact = function() {
-    if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!game.process.over) ) {
-        setTimeout(function(){game.gameOver()}, 10);
+    if((this.y - game.enemyOffset == player.y - game.playerOffset) && (Math.abs(this.x - player.x) < game.xUnit / 2) && (!game.process.fail) ) {
+        setTimeout(function(){game.gameFail()}, 10);
     }
 }
 // 设置敌人随机值
@@ -202,7 +222,6 @@ Player.prototype.handleInputgame = function(key) {
 Player.prototype.reset = function() {
     this.x = this.col * game.xUnit;
     this.y = this.row * game.yUnit + game.playerOffset;
-    game.procSet('during');
 }
 
 // 现在实例化你的所有对象
